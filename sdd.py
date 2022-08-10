@@ -4,7 +4,9 @@ from math import trunc
 from glob import glob
 from PIL import Image
 from tqdm import tqdm
+
 import json
+import os
 
 def changeColorDepth(image, colorCount):
     
@@ -54,14 +56,20 @@ def SDD(A, k, name=''):
         x = maximize_F(s)
 
         # repeat until max is not changing much or after fixed number:
-        # I will always do 5 iterations since nothing seems to change after that
-        for _ in range(5):
+        # I will do at most 10 iterations since nothing seems to change after that
+        prev = ''
+        for _ in range(10):
             #s = (x @ A)/np.linalg.norm(y, 2) #K: small typo here (-0.5 pt) 
             s = (x @ A)/np.linalg.norm(x, 2) #K: fixed it
             y = maximize_F(s)
 
             s = (A @ y)/np.linalg.norm(y, 2)
             x = maximize_F(s)
+
+            if str(y) == prev:
+                break
+            
+            prev = str(y)
 
         d = round((x @ A @ y)/(np.linalg.norm(x)**2 * np.linalg.norm(y)**2), 0)
       
@@ -70,23 +78,22 @@ def SDD(A, k, name=''):
         if d > 0:
             A = A - d * x[:,None] @ y[None, :]
 
-            d_s.append(int(d))
+            d_s.append(d)
             x_s.append(x)
             y_s.append(y)
-
-        else:
-            break
     
-    X = np.array(x_s).T
-    Y = np.array(y_s)
+    order = np.argsort(d_s)[::-1]
+    D = (np.array(d_s))[order]
+    X = (np.array(x_s)[order]).T
+    Y = np.array(y_s)[order]
     
-    return X, d_s, Y
+    return X, D, Y
 
 for picture in glob('examples/in/*'):
 
     name = picture[picture.rindex('\\') + 1: -4]
 
-    print('Starting', name)
+    print('Starting:', name)
     img = Image.open(picture)
     img.load()
     changeColorDepth(image=img, colorCount=24)
@@ -96,7 +103,7 @@ for picture in glob('examples/in/*'):
     green = img[:, :, 1]
     blue = img[:, :, 2]
 
-    k = 25
+    k = 100
     
     X_r, D_r, Y_r = SDD(red, k, 'Red')
     X_g, D_g, Y_g = SDD(green, k, 'Green')
@@ -109,9 +116,8 @@ for picture in glob('examples/in/*'):
     data['green'] = [[list(X_g[i]) for i in range(len(X_g))], list(D_g), [list(Y_g[j]) for j in range(len(Y_g))]]
     data['blue'] = [[list(X_b[i]) for i in range(len(X_b))], list(D_b), [list(Y_b[j]) for j in range(len(Y_b))]]
 
-    with open('examples/out/' + name + '.json', 'w') as f:
+    with open('examples/out/' + name + '.json', 'w' if os.path.exists('examples/out/' + name + '.json') else 'x') as f:
+        # print(data)
         json.dump(data, f)
 
-
-
-    break
+    print('Completed:', name, '\n')

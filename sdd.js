@@ -1,9 +1,21 @@
-$.getJSON("examples/out/boat.json", function (json) {
-    let image_bitMap = load_json(json); // this will show the info it in firebug console
+$.getJSON("examples/out/cat.json", function (json) {
+    const matrices = load_json(json); // this will show the info it in firebug console
 
-    var image = new ImageData(image_bitMap, 512, 512)
+    var slider = document.querySelector('input')
+
     var ctx = document.getElementById('canvas').getContext('2d')
+
+    console.log(matrices)
+
+    let image = new ImageData(matrices[matrices.length - 1], 512, 512)
     ctx.putImageData(image, 0, 0)
+
+    slider.addEventListener('change', () => {
+        console.log('display till layer', slider.value - 1)
+        let image = new ImageData(matrices[slider.value - 1], 512, 512)
+        ctx.putImageData(image, 0, 0)
+    })
+        
 });
 
 function load_json(input) {
@@ -13,18 +25,45 @@ function load_json(input) {
     let green = calculate_matrix(input['green'])
     let blue = calculate_matrix(input['blue'])
 
+    console.log(red)
 
-    var output = new Uint8ClampedArray(red.length * red[0].length * 4);
 
+    var output = new Array(red.length)
+    console.log('building layers')
+    for (let l = 0; l < output.length; l++) {
+        var layer = new Uint8ClampedArray(red[l].length * red[l][0].length * 4);
 
-    let c = 0 // counter
-    for (let i = 0; i < red.length; i++) {
-        for (let j = 0; j < red[0].length; j++) {
-            output[c++] = red[i][j]
-            output[c++] = green[i][j]
-            output[c++] = blue[i][j]
-            output[c++] = 255
+        let c = 0 // counter
+        for (let i = 0; i < red[l].length; i++) {
+            for (let j = 0; j < red[l][0].length; j++) {
+                if (l == 0) {
+                    layer[c++] = red[l][i][j]
+                    layer[c++] = green[l][i][j]
+                    layer[c++] = blue[l][i][j]
+                }
+                else {
+                    let prev_layers = [0, 0, 0];
+                    for (let t = 0; t < l; t++) {
+                        prev_layers[0] += red[t][i][j]
+                        prev_layers[1] += green[t][i][j]
+                        prev_layers[2] += blue[t][i][j]
+                    }
+ 
+                    layer[c] = Math.max(0, red[l][i][j] + prev_layers[0])
+                    c++
+ 
+                    layer[c] = Math.max(0, green[l][i][j] + prev_layers[1])
+                    c++
+
+                    layer[c] = Math.max(0, blue[l][i][j] + prev_layers[2])
+                    c++
+                }
+                layer[c++] = 255
+            }
         }
+
+        output[l] = layer
+        console.log('\t finished', l)
     }
 
     return output
@@ -35,32 +74,19 @@ function calculate_matrix(input) {
     D = input[1]
     Y = input[2]
 
-    // A = X * D
-    A = new Array(X.length)
-    k = X[0].length
-    for (let i = 0; i < A.length; i++) {
-        temp = new Array(k)
-        for (let j = 0; j < k; j++) {
-            temp[j] = X[i][j] * D[j]
-        }
-        A[i] = temp
-    }
-
-    // out = A * Y
-    out = new Array(X.length)
-    k = X[0].length
-    for (let i = 0; i < A.length; i++) {
-        temp = new Array(Y[0].length)
-        for (let j = 0; j < Y[0].length; j++) {
-            sum = 0
-            for (let f = 0; f < k; f++) {
-                sum += A[i][f] * Y[f][j]
+    // x * d * y
+    // console.log(Y)
+    var layers = new Array(D.length)
+    for (let l = 0; l < layers.length; l++) {
+        let A = new Array(X.length)
+        for (let i = 0; i < X.length; i++) {
+            A[i] = new Array(Y[0].length)
+            for (let j = 0; j < Y[0].length; j++) {
+                A[i][j] = X[i][l] * Y[l][j] * D[l]
             }
-            // replace negative values with zero
-            temp[j] = sum > 0 ? sum : 0
         }
-        out[i] = temp
+        layers[l] = A
     }
 
-    return out
+    return layers
 }
