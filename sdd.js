@@ -15,7 +15,7 @@ $.getJSON("examples/out/cat.json", function (json) {
         let image = new ImageData(matrices[slider.value - 1], 512, 512)
         ctx.putImageData(image, 0, 0)
     })
-        
+
 });
 
 function load_json(input) {
@@ -30,34 +30,33 @@ function load_json(input) {
 
     var output = new Array(red.length)
     console.log('building layers')
+    var prev_layers = new Array(red[0].length)
+    for (let i = 0; i < red[0].length; i++) {
+        prev_layers[i] = new Array(red[0][0].length)
+        for (let j = 0; j < red[0][0].length; j++) {
+            prev_layers[i][j] = [0, 0, 0]
+        }
+    }
     for (let l = 0; l < output.length; l++) {
         var layer = new Uint8ClampedArray(red[l].length * red[l][0].length * 4);
 
         let c = 0 // counter
         for (let i = 0; i < red[l].length; i++) {
             for (let j = 0; j < red[l][0].length; j++) {
-                if (l == 0) {
-                    layer[c++] = red[l][i][j]
-                    layer[c++] = green[l][i][j]
-                    layer[c++] = blue[l][i][j]
-                }
-                else {
-                    let prev_layers = [0, 0, 0];
-                    for (let t = 0; t < l; t++) {
-                        prev_layers[0] += red[t][i][j]
-                        prev_layers[1] += green[t][i][j]
-                        prev_layers[2] += blue[t][i][j]
-                    }
- 
-                    layer[c] = Math.max(0, red[l][i][j] + prev_layers[0])
-                    c++
- 
-                    layer[c] = Math.max(0, green[l][i][j] + prev_layers[1])
-                    c++
 
-                    layer[c] = Math.max(0, blue[l][i][j] + prev_layers[2])
-                    c++
-                }
+                prev_layers[i][j][0] += red[l][i][j]
+                prev_layers[i][j][1] += green[l][i][j]
+                prev_layers[i][j][2] += blue[l][i][j]
+
+
+                layer[c] = Math.max(0, prev_layers[i][j][0])
+                c++
+
+                layer[c] = Math.max(0, prev_layers[i][j][1])
+                c++
+
+                layer[c] = Math.max(0, prev_layers[i][j][2])
+                c++
                 layer[c++] = 255
             }
         }
