@@ -1,4 +1,4 @@
-$.getJSON("examples/out/cat.json", function (json) {
+$.getJSON("examples/out/pixelart_2.json", function (json) {
     const matrices = load_json(json); // this will show the info it in firebug console
 
     var slider = document.querySelector('input')
@@ -10,10 +10,17 @@ $.getJSON("examples/out/cat.json", function (json) {
     let image = new ImageData(matrices[matrices.length - 1], 512, 512)
     ctx.putImageData(image, 0, 0)
 
+
     slider.addEventListener('change', () => {
-        console.log('display till layer', slider.value - 1)
         let image = new ImageData(matrices[slider.value - 1], 512, 512)
         ctx.putImageData(image, 0, 0)
+
+        let layer = document.getElementById('layers')
+        let size = document.getElementById('size')
+
+        layer.textContent = `Displaying ${slider.value} Layers`
+        size.textContent = `Image Size: ~${Number((387*slider.value + 3*512)/1000).toFixed(2)}KB`
+        
     })
 
 });
@@ -21,12 +28,9 @@ $.getJSON("examples/out/cat.json", function (json) {
 function load_json(input) {
 
     // Construct Red, Green and Blue matrix
-    let red = calculate_matrix(input['red'])
-    let green = calculate_matrix(input['green'])
-    let blue = calculate_matrix(input['blue'])
-
-    console.log(red)
-
+    let red = calculate_matrix(input['red'], input['mean']['red'])
+    let green = calculate_matrix(input['green'], input['mean']['green'])
+    let blue = calculate_matrix(input['blue'], input['mean']['blue'])
 
     var output = new Array(red.length)
     console.log('building layers')
@@ -34,7 +38,7 @@ function load_json(input) {
     for (let i = 0; i < red[0].length; i++) {
         prev_layers[i] = new Array(red[0][0].length)
         for (let j = 0; j < red[0][0].length; j++) {
-            prev_layers[i][j] = [0, 0, 0]
+            prev_layers[i][j] = [input['mean']['red'][j], input['mean']['green'][j], input['mean']['blue'][j]]
         }
     }
     for (let l = 0; l < output.length; l++) {
@@ -49,13 +53,13 @@ function load_json(input) {
                 prev_layers[i][j][2] += blue[l][i][j]
 
 
-                layer[c] = Math.max(0, prev_layers[i][j][0])
+                layer[c] = Math.min(255, Math.max(0, prev_layers[i][j][0]))
                 c++
 
-                layer[c] = Math.max(0, prev_layers[i][j][1])
+                layer[c] = Math.min(255, Math.max(0, prev_layers[i][j][1]))
                 c++
 
-                layer[c] = Math.max(0, prev_layers[i][j][2])
+                layer[c] = Math.min(255, Math.max(0, prev_layers[i][j][2]))
                 c++
                 layer[c++] = 255
             }
