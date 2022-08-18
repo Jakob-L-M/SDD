@@ -103,14 +103,24 @@ for picture in glob('examples/in/*'):
     green = img[:, :, 1]
     blue = img[:, :, 2]
 
-    k = 100
+    # save to json
+    data = {}
+
+    # Make picture mean equal to 0
+    data['mean'] = {'red': [], 'green': [], 'blue': []}
+    
+    for mat_name, mat in [('red', red), ('green', green), ('blue', blue)]:
+        mean = [int(i) for i in np.mean(mat, axis=1)]
+        data['mean'][mat_name] = mean
+        
+        # edit the actual matrix
+        mat[:, :] = mat - mean
+
+    k = 200
     
     X_r, D_r, Y_r = SDD(red, k, 'Red')
     X_g, D_g, Y_g = SDD(green, k, 'Green')
     X_b, D_b, Y_b = SDD(blue, k, 'Blue')
-
-    # save to json
-    data = {}
 
     data['red'] = [[list(X_r[i]) for i in range(len(X_r))], list(D_r), [list(Y_r[j]) for j in range(len(Y_r))]]
     data['green'] = [[list(X_g[i]) for i in range(len(X_g))], list(D_g), [list(Y_g[j]) for j in range(len(Y_g))]]
