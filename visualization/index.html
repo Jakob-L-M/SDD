@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image compression with semi descride matrix decompositions</title>
+    <script src="jquery.min.js"></script>
+    <script src="sdd.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="/examples/out/">
+</head>
+
+<body>
+
+    <h1 id='title'>Image compression with semi descride matrix decompositions (SDD)</h1>
+    <p id='summary'>This visualization shows how SDD performs in regards of image compression</p>
+
+    <div id='picture_gallery'>
+        <div id='picture_1' class="gallery-picture">
+
+        </div>
+
+        <div id='picture_2' class="gallery-picture">
+
+        </div>
+    </div>
+
+    <div id='original_picture'></div>
+
+    <p id="size">Current size: 20.89KB</p>
+    <p id="layers">Showing 50 Layers</p>
+
+    <div id='slider'>
+        <input id="input" type="range" min="1" , max="200" , value="50">
+    </div>
+
+    <div id='sdd_picture'>
+        <canvas id="canvas" width="512" , height="512"></canvas>
+    </div>
+
+    <!-- add footer -->
+</body>
+
+</html>

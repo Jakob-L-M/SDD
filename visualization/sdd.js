@@ -1,4 +1,4 @@
-$.getJSON("examples/out/pixelart_2.json", function (json) {
+$.getJSON("../examples/out/boat.json", function (json) {
     const matrices = load_json(json); // this will show the info it in firebug console
 
     var slider = document.querySelector('input')
