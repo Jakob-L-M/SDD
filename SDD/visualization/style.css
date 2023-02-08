@@ -49,6 +49,7 @@ canvas {
     width: 60vw;
     left: 20vw;
     margin-bottom: 5vh;
+    text-align: justify;
 }
 
 #slider_input {

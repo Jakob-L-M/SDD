@@ -14,19 +14,23 @@
 <body>
 
     <h1 id='title'>Image compression with semi descride matrix decompositions (SDD)</h1>
-    <p id='summary'>This visualization shows how SDD performs in regards of image compression.
+    <p id='summary'>
+        This visualization shows how SDD performs in regards of image compression.
         Choose one of the pictures and use the slider to change the number of considered layers.
-        The approximate image size will update automatically. On a desktop computer you can click the slider once and
-        than use the arrow keys to navigate through layers.
-        Changing Images may take a few seconds since the matrices are being constructed and loaded into your RAM. The
-        right/bottom picture displays the image usind SDD compression and the left/top is the original.
-        The code for this page can be found in <a href="https://www.github.com/Jakob-L-M/SDD">this repository</a>.
+        The approximate image size will update automatically as well as the information about the least significant
+        layer's weight.
+        These weights can theoretically lie between 0 and 255, representing RGB values.
+        On a desktop computer, you can click the slider once and then use the arrow keys to navigate through layers.
+        Changing images may take a few seconds since the matrices are being constructed and loaded into your RAM. The
+        right/bottom picture displays the image using SDD compression, and the left/top is the original. The code for
+        this page can be found in <a href="https://www.github.com/Jakob-L-M/SDD">this repository</a>.
     </p>
 
     <div id='picture_selection'>
         <input class="picture_button" id="boat" type="image" src="SDD/examples/in/boat.png"
             onclick="change_picture('boat')" />
-        <input class="picture_button" id="cat" type="image" src="SDD/examples/in/cat.png" onclick="change_picture('cat')" />
+        <input class="picture_button" id="cat" type="image" src="SDD/examples/in/cat.png"
+            onclick="change_picture('cat')" />
         <input class="picture_button" id="logo" type="image" src="SDD/examples/in/logo.png"
             onclick="change_picture('logo')" />
         <input class="picture_button" id="mandelbrot" type="image" src="SDD/examples/in/mandelbrot.png"

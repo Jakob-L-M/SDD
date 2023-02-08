@@ -1,4 +1,5 @@
 var matrices;
+var d;
 const slider = document.getElementById('slider_input')
 const ctx = document.getElementById('sdd_canvas').getContext('2d')
 var currentPicture = 'boat'
@@ -10,7 +11,7 @@ slider.addEventListener('change', () => {
     let layer = document.getElementById('layers')
     let size = document.getElementById('size')
 
-    layer.textContent = `Displaying ${slider.value} Layers`
+    layer.textContent = `Displaying ${slider.value} Layers | Weight of last Layer: ${d[slider.value - 1]}`
     size.textContent = `Image Size: ~${Number((387 * slider.value + 3 * 512) / 1000).toFixed(2)}KB`
 
 })
@@ -26,7 +27,9 @@ function change_picture(pictureName) {
     let initialPos = document.getElementById('slider_input').value
 
     $.getJSON(`SDD/examples/out/${pictureName}.json`, function (json) {
-        let new_matrices = load_json(json); // this will show the info it in firebug console
+        let input = load_json(json); // this will show the info it in firebug console
+        let new_matrices = input[0]
+        let new_importance = input[1]
 
         let image = new ImageData(new_matrices[initialPos - 1], 512, 512)
         ctx.putImageData(image, 0, 0)
@@ -42,7 +45,7 @@ function change_picture(pictureName) {
             orgCtx.drawImage(originalPicture, 0, 0);
         };
         
-        set_matrices(new_matrices)
+        set_matrices(new_matrices, new_importance)
 
         document.getElementById('loading').style.visibility = 'hidden'
         document.getElementById('interactions').style.visibility = 'visible'
@@ -52,9 +55,15 @@ function change_picture(pictureName) {
     });
 }
 
-function set_matrices(new_matrices) {
+function set_matrices(new_matrices, new_importance) {
     console.log('Done')
     matrices = new_matrices
+    d = new_importance
+    let layer = document.getElementById('layers')
+    let size = document.getElementById('size')
+
+    layer.textContent = `Displaying ${slider.value} Layers | Weight of last Layer: ${d[slider.value - 1]}`
+    size.textContent = `Image Size: ~${Number((387 * slider.value + 3 * 512) / 1000).toFixed(2)}KB`
 }
 
 function load_json(input) {
@@ -63,6 +72,11 @@ function load_json(input) {
     let red = calculate_matrix(input['red'], input['mean']['red'])
     let green = calculate_matrix(input['green'], input['mean']['green'])
     let blue = calculate_matrix(input['blue'], input['mean']['blue'])
+
+    var importance = []
+    for (let i = 0; i < input['mean']['red'].length; i++) {
+        importance.push(Math.max(input['red'][1][i], input['green'][1][i], input['blue'][1][i]))
+    }
 
     var output = new Array(red.length)
     console.log('building layers')
@@ -101,7 +115,7 @@ function load_json(input) {
         // console.log('\t finished', l)
     }
 
-    return output
+    return [output, importance]
 }
 
 function calculate_matrix(input) {
