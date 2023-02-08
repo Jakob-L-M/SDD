@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image compression with semi descride matrix decompositions</title>
     <script src="visualization/jquery.min.js"></script>
-    <script src="visualization/sdd.js"></script>
+    <script src="visualization/sdd.js" defer></script>
     <link rel="stylesheet" href="visualization/style.css">
     <link href="examples/out/">
 </head>
@@ -14,31 +14,59 @@
 <body>
 
     <h1 id='title'>Image compression with semi descride matrix decompositions (SDD)</h1>
-    <p id='summary'>This visualization shows how SDD performs in regards of image compression</p>
+    <p id='summary'>This visualization shows how SDD performs in regards of image compression.
+        Choose one of the pictures and use the slider to change the number of considered layers.
+        The approximate image size will update automatically. On a desktop computer you can click the slider once and
+        than use the arrow keys to navigate through layers.
+        Changing Images may take a few seconds since the matrices are being constructed and loaded into your RAM. The
+        right/bottom picture displays the image usind SDD compression and the left/top is the original.
+        The code for this page can be found in <a href="https://www.github.com/Jakob-L-M/SDD">this repository</a>.
+    </p>
 
-    <div id='picture_gallery'>
-        <div id='picture_1' class="gallery-picture">
+    <div id='picture_selection'>
+        <input class="picture_button" id="boat" type="image" src="examples/in/boat.png"
+            onclick="change_picture('boat')" />
+        <input class="picture_button" id="cat" type="image" src="examples/in/cat.png" onclick="change_picture('cat')" />
+        <input class="picture_button" id="logo" type="image" src="examples/in/logo.png"
+            onclick="change_picture('logo')" />
+        <input class="picture_button" id="mandelbrot" type="image" src="examples/in/mandelbrot.png"
+            onclick="change_picture('mandelbrot')" />
+        <input class="picture_button" id="person" type="image" src="examples/in/person.png"
+            onclick="change_picture('person')" />
+        <input class="picture_button" id="pixelart_2" type="image" src="examples/in/pixelart_2.png"
+            onclick="change_picture('pixelart_2')" />
+        <input class="picture_button" id="pixelart" type="image" src="examples/in/pixelart.png"
+            onclick="change_picture('pixelart')" />
+        <input class="picture_button" id="space" type="image" src="examples/in/space.png"
+            onclick="change_picture('space')" />
+        <input class="picture_button" id="tree" type="image" src="examples/in/tree.png"
+            onclick="change_picture('tree')" />
+    </div>
 
+    <div id="loading">
+        <img src="visualization/Loading.gif">
+        <h1>Loading...</h1>
+    </div>
+
+    <div id="interactions">
+        <div class="picture_box">
+
+            <div class='picture'>
+                <canvas id="sdd_canvas" , width="512" , height="512"></canvas>
+            </div>
+
+            <div class='picture'>
+                <canvas id='original_canvas' , width="512" , height="512"></canvas>
+            </div>
         </div>
 
-        <div id='picture_2' class="gallery-picture">
+        <p id="size">Image Size: ~20.89KB</p>
+        <p id="layers">Displaying 50 Layers</p>
 
+        <div id='slider'>
+            <input id="slider_input" type="range" min="1" , max="200" , value="50">
         </div>
     </div>
-
-    <div id='original_picture'></div>
-
-    <p id="size">Current size: 20.89KB</p>
-    <p id="layers">Showing 50 Layers</p>
-
-    <div id='slider'>
-        <input id="input" type="range" min="1" , max="200" , value="50">
-    </div>
-
-    <div id='sdd_picture'>
-        <canvas id="canvas" width="512" , height="512"></canvas>
-    </div>
-
     <!-- add footer -->
 </body>
 

@@ -1,29 +1,61 @@
-$.getJSON("../examples/out/boat.json", function (json) {
-    const matrices = load_json(json); // this will show the info it in firebug console
+var matrices;
+const slider = document.getElementById('slider_input')
+const ctx = document.getElementById('sdd_canvas').getContext('2d')
+var currentPicture = 'boat'
 
-    var slider = document.querySelector('input')
-
-    var ctx = document.getElementById('canvas').getContext('2d')
-
-    console.log(matrices)
-
-    let image = new ImageData(matrices[matrices.length - 1], 512, 512)
+slider.addEventListener('change', () => {
+    let image = new ImageData(matrices[slider.value - 1], 512, 512)
     ctx.putImageData(image, 0, 0)
 
+    let layer = document.getElementById('layers')
+    let size = document.getElementById('size')
 
-    slider.addEventListener('change', () => {
-        let image = new ImageData(matrices[slider.value - 1], 512, 512)
+    layer.textContent = `Displaying ${slider.value} Layers`
+    size.textContent = `Image Size: ~${Number((387 * slider.value + 3 * 512) / 1000).toFixed(2)}KB`
+
+})
+
+function change_picture(pictureName) {
+
+    document.getElementById('loading').style.visibility = 'visible'
+    document.getElementById('interactions').style.visibility = 'hidden'
+
+    document.getElementById(currentPicture).style.boxShadow = '0vmin 0vmin 0.45vw 0.45vw gray'
+    document.getElementById(pictureName).style.boxShadow = '0vmin 0vmin 0.45vw 0.45vw rgb(27, 180, 27)'
+
+    let initialPos = document.getElementById('slider_input').value
+
+    $.getJSON(`../examples/out/${pictureName}.json`, function (json) {
+        let new_matrices = load_json(json); // this will show the info it in firebug console
+
+        let image = new ImageData(new_matrices[initialPos - 1], 512, 512)
         ctx.putImageData(image, 0, 0)
 
-        let layer = document.getElementById('layers')
-        let size = document.getElementById('size')
+        document.getElementById('layers').textContent = `Displaying ${initialPos} Layers`
+        document.getElementById('size').textContent = `Image Size: ~${Number((387 * initialPos + 3 * 512) / 1000).toFixed(2)}KB`
 
-        layer.textContent = `Displaying ${slider.value} Layers`
-        size.textContent = `Image Size: ~${Number((387*slider.value + 3*512)/1000).toFixed(2)}KB`
+        // original Image
+        let originalPicture = new Image();
+        let orgCtx = document.getElementById('original_canvas').getContext('2d');
+        originalPicture.src = `../examples/in/${pictureName}.png`; // can also be a remote URL e.g. http://
+        originalPicture.onload = function () {
+            orgCtx.drawImage(originalPicture, 0, 0);
+        };
         
-    })
+        set_matrices(new_matrices)
 
-});
+        document.getElementById('loading').style.visibility = 'hidden'
+        document.getElementById('interactions').style.visibility = 'visible'
+
+        currentPicture = pictureName
+
+    });
+}
+
+function set_matrices(new_matrices) {
+    console.log('Done')
+    matrices = new_matrices
+}
 
 function load_json(input) {
 
@@ -66,7 +98,7 @@ function load_json(input) {
         }
 
         output[l] = layer
-        console.log('\t finished', l)
+        // console.log('\t finished', l)
     }
 
     return output
@@ -93,3 +125,5 @@ function calculate_matrix(input) {
 
     return layers
 }
+
+change_picture(currentPicture, 50)
