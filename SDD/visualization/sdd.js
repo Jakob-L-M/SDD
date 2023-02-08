@@ -25,7 +25,7 @@ function change_picture(pictureName) {
 
     let initialPos = document.getElementById('slider_input').value
 
-    $.getJSON(`../examples/out/${pictureName}.json`, function (json) {
+    $.getJSON(`SDD/examples/out/${pictureName}.json`, function (json) {
         let new_matrices = load_json(json); // this will show the info it in firebug console
 
         let image = new ImageData(new_matrices[initialPos - 1], 512, 512)
@@ -37,7 +37,7 @@ function change_picture(pictureName) {
         // original Image
         let originalPicture = new Image();
         let orgCtx = document.getElementById('original_canvas').getContext('2d');
-        originalPicture.src = `../examples/in/${pictureName}.png`; // can also be a remote URL e.g. http://
+        originalPicture.src = `SDD/examples/in/${pictureName}.png`; // can also be a remote URL e.g. http://
         originalPicture.onload = function () {
             orgCtx.drawImage(originalPicture, 0, 0);
         };

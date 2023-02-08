@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image compression with semi descride matrix decompositions</title>
-    <script src="visualization/jquery.min.js"></script>
-    <script src="visualization/sdd.js" defer></script>
-    <link rel="stylesheet" href="visualization/style.css">
-    <link href="examples/out/">
+    <script src="SDD/visualization/jquery.min.js"></script>
+    <script src="SDD/visualization/sdd.js" defer></script>
+    <link rel="stylesheet" href="SDD/visualization/style.css">
+    <link href="SDD/examples/out/">
 </head>
 
 <body>
@@ -24,27 +24,27 @@
     </p>
 
     <div id='picture_selection'>
-        <input class="picture_button" id="boat" type="image" src="examples/in/boat.png"
+        <input class="picture_button" id="boat" type="image" src="SDD/examples/in/boat.png"
             onclick="change_picture('boat')" />
-        <input class="picture_button" id="cat" type="image" src="examples/in/cat.png" onclick="change_picture('cat')" />
-        <input class="picture_button" id="logo" type="image" src="examples/in/logo.png"
+        <input class="picture_button" id="cat" type="image" src="SDD/examples/in/cat.png" onclick="change_picture('cat')" />
+        <input class="picture_button" id="logo" type="image" src="SDD/examples/in/logo.png"
             onclick="change_picture('logo')" />
-        <input class="picture_button" id="mandelbrot" type="image" src="examples/in/mandelbrot.png"
+        <input class="picture_button" id="mandelbrot" type="image" src="SDD/examples/in/mandelbrot.png"
             onclick="change_picture('mandelbrot')" />
-        <input class="picture_button" id="person" type="image" src="examples/in/person.png"
+        <input class="picture_button" id="person" type="image" src="SDD/examples/in/person.png"
             onclick="change_picture('person')" />
-        <input class="picture_button" id="pixelart_2" type="image" src="examples/in/pixelart_2.png"
+        <input class="picture_button" id="pixelart_2" type="image" src="SDD/examples/in/pixelart_2.png"
             onclick="change_picture('pixelart_2')" />
-        <input class="picture_button" id="pixelart" type="image" src="examples/in/pixelart.png"
+        <input class="picture_button" id="pixelart" type="image" src="SDD/examples/in/pixelart.png"
             onclick="change_picture('pixelart')" />
-        <input class="picture_button" id="space" type="image" src="examples/in/space.png"
+        <input class="picture_button" id="space" type="image" src="SDD/examples/in/space.png"
             onclick="change_picture('space')" />
-        <input class="picture_button" id="tree" type="image" src="examples/in/tree.png"
+        <input class="picture_button" id="tree" type="image" src="SDD/examples/in/tree.png"
             onclick="change_picture('tree')" />
     </div>
 
     <div id="loading">
-        <img src="visualization/Loading.gif">
+        <img src="SDD/visualization/Loading.gif">
         <h1>Loading...</h1>
     </div>
 
