@@ -89,7 +89,7 @@ def SDD(A, k, name=''):
     
     return X, D, Y
 
-for picture in glob('examples/in/*'):
+for picture in glob('SDD/examples/in/*'):
 
     name = picture[picture.rindex('\\') + 1: -4]
 
@@ -122,11 +122,11 @@ for picture in glob('examples/in/*'):
     X_g, D_g, Y_g = SDD(green, k, 'Green')
     X_b, D_b, Y_b = SDD(blue, k, 'Blue')
 
-    data['red'] = [[list(X_r[i]) for i in range(len(X_r))], list(D_r), [list(Y_r[j]) for j in range(len(Y_r))]]
-    data['green'] = [[list(X_g[i]) for i in range(len(X_g))], list(D_g), [list(Y_g[j]) for j in range(len(Y_g))]]
-    data['blue'] = [[list(X_b[i]) for i in range(len(X_b))], list(D_b), [list(Y_b[j]) for j in range(len(Y_b))]]
+    data['red'] = [[[int(k) for k in X_r[i]] for i in range(len(X_r))], list(D_r), [list(Y_r[j]) for j in range(len(Y_r))]]
+    data['green'] = [[[int(k) for k in X_g[i]] for i in range(len(X_g))], list(D_g), [list(Y_g[j]) for j in range(len(Y_g))]]
+    data['blue'] = [[[int(k) for k in X_b[i]] for i in range(len(X_b))], list(D_b), [list(Y_b[j]) for j in range(len(Y_b))]]
 
-    with open('examples/out/' + name + '.json', 'w' if os.path.exists('examples/out/' + name + '.json') else 'x') as f:
+    with open('SDD/examples/out/' + name + '.json', 'w' if os.path.exists('SDD/examples/out/' + name + '.json') else 'x') as f:
         # print(data)
         json.dump(data, f)
 
